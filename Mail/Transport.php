@@ -9,7 +9,6 @@
 namespace Mygento\Smtp\Mail;
 
 use Closure;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\MailException;
 use Magento\Framework\Mail\Address;
@@ -17,17 +16,16 @@ use Magento\Framework\Mail\EmailMessageInterface;
 use Magento\Framework\Mail\TransportInterface;
 use Mygento\Smtp\Api\Data;
 use Mygento\Smtp\Api\LogRepositoryInterface;
+use Mygento\Smtp\Model\Config;
 use Mygento\Smtp\Model\Source\Status;
 use Psr\Log\LoggerInterface;
 
 class Transport
 {
-    public const XML_PATH_EMAIL_LOG = 'system/smtp/log';
-
     public function __construct(
         private LogRepositoryInterface $repo,
         private Data\LogInterfaceFactory $factory,
-        private ScopeConfigInterface $config,
+        private Config $config,
         private LoggerInterface $logger
     ) {
     }
@@ -40,7 +38,7 @@ class Transport
      */
     public function aroundSendMessage(TransportInterface $subject, Closure $proceed): void
     {
-        if (!$this->config->isSetFlag(self::XML_PATH_EMAIL_LOG)) {
+        if (!$this->config->isEnabled()) {
             $proceed();
 
             return;
