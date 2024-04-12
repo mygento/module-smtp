@@ -8,6 +8,7 @@ The module adds a feature to log email messages to the database even when email 
 
 ## Configuration
 Add Yes/No field `Log Email` to `Stores -> Configuration -> Advanced -> System -> Mail Sending Settings`
+Add days(int) field `Clean Email Log Every` to `Stores -> Configuration -> Advanced -> System -> Mail Sending Settings`
 
 ## Plugins
 * `aroundSendMessage`
