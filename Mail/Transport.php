@@ -12,7 +12,6 @@ use Closure;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\MailException;
 use Magento\Framework\Mail\Address;
-use Magento\Framework\Mail\EmailMessage;
 use Magento\Framework\Mail\EmailMessageInterface;
 use Magento\Framework\Mail\TransportInterface;
 use Mygento\Smtp\Api\Data;
@@ -75,40 +74,33 @@ class Transport
         }
     }
 
-    /**
-     * @param EmailMessage $message
-     * @return bool
-     */
-    private function validateBlacklist(EmailMessage $message): bool
+    private function validateBlacklist(EmailMessageInterface $message): bool
     {
         $result = false;
-
         $blacklist = $this->config->getBlacklist();
-        if ($blacklist) {
-            $recipient = $this->getRecipient($message);
-            $patterns = array_unique(explode(PHP_EOL, $blacklist));
-            foreach ($patterns as $pattern) {
-                try {
-                    if (preg_match($pattern, $recipient)) {
-                        $result = true;
-                        break;
-                    }
-                } catch (\Exception $e) {
-                    // Ignore validate if the pattern is error
-                    continue;
+
+        if(!$blacklist) {
+            return false;
+        }
+
+        $recipient = $this->getRecipient($message);
+        $patterns = array_unique(explode(PHP_EOL, $blacklist));
+        foreach ($patterns as $pattern) {
+            try {
+                if (preg_match($pattern, $recipient)) {
+                    $result = true;
+                    break;
                 }
+            } catch (\Exception $e) {
+                // Ignore validate if the pattern is error
+                continue;
             }
         }
 
         return $result;
     }
 
-    /**
-     * @param EmailMessage $message
-     *
-     * @return string
-     */
-    private function getRecipient(EmailMessage $message): string
+    private function getRecipient(EmailMessageInterface $message): string
     {
         $emails = [];
         if ($message->getTo()) {
