@@ -14,6 +14,7 @@ class Config
 {
     private const XML_PATH_EMAIL_LOG = 'system/smtp/log';
     private const XML_PATH_CLEAN_EMAIL_PERIOD = 'system/smtp/clean_email_period';
+    private const XML_PATH_BLACKLIST = 'system/smtp/blacklist';
 
     public function __construct(
         private ScopeConfigInterface $scopeConfig
@@ -34,5 +35,13 @@ class Config
     public function getCleanEmailPeriod(): ?string
     {
         return $this->scopeConfig->getValue(self::XML_PATH_CLEAN_EMAIL_PERIOD);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBlacklist(): ?string
+    {
+        return $this->scopeConfig->getValue(self::XML_PATH_BLACKLIST);
     }
 }

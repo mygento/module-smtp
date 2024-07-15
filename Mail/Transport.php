@@ -12,6 +12,7 @@ use Closure;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\MailException;
 use Magento\Framework\Mail\Address;
+use Magento\Framework\Mail\EmailMessage;
 use Magento\Framework\Mail\EmailMessageInterface;
 use Magento\Framework\Mail\TransportInterface;
 use Mygento\Smtp\Api\Data;
@@ -20,6 +21,9 @@ use Mygento\Smtp\Model\Config;
 use Mygento\Smtp\Model\Source\Status;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class Transport
 {
     public function __construct(
@@ -43,12 +47,16 @@ class Transport
 
             return;
         }
+        $message = $subject->getMessage();
+        if ($this->validateBlacklist($message)) {
+            return;
+        }
 
         /** @var Data\LogInterface $entity */
         $entity = $this->factory->create();
 
         try {
-            $this->fillEntity($entity, $subject->getMessage());
+            $this->fillEntity($entity, $message);
             $proceed();
 
             $entity->setStatus(Status::STATUS_SUCCESS);
@@ -65,6 +73,51 @@ class Transport
         } finally {
             $this->repo->save($entity);
         }
+    }
+
+    /**
+     * @param EmailMessage $message
+     * @return bool
+     */
+    private function validateBlacklist(EmailMessage $message): bool
+    {
+        $result = false;
+
+        $blacklist = $this->config->getBlacklist();
+        if ($blacklist) {
+            $recipient = $this->getRecipient($message);
+            $patterns = array_unique(explode(PHP_EOL, $blacklist));
+            foreach ($patterns as $pattern) {
+                try {
+                    if (preg_match($pattern, $recipient)) {
+                        $result = true;
+                        break;
+                    }
+                } catch (\Exception $e) {
+                    // Ignore validate if the pattern is error
+                    continue;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param EmailMessage $message
+     *
+     * @return string
+     */
+    private function getRecipient(EmailMessage $message): string
+    {
+        $emails = [];
+        if ($message->getTo()) {
+            foreach ($message->getTo() as $address) {
+                $emails[] = $address->getEmail();
+            }
+        }
+
+        return implode(',', $emails);
     }
 
     private function formatList(iterable $list): string
