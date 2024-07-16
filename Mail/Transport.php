@@ -79,7 +79,7 @@ class Transport
         $result = false;
         $blacklist = $this->config->getBlacklist();
 
-        if(!$blacklist) {
+        if (!$blacklist) {
             return false;
         }
 
