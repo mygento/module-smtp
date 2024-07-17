@@ -13,13 +13,13 @@ use Magento\Framework\Exception\MailException;
 use Magento\Framework\Mail\EmailMessageInterface;
 use Magento\Framework\Mail\TransportInterface;
 use Mygento\Smtp\Model\Config;
-use Mygento\Smtp\Model\Mail\Logger;
+use Mygento\Smtp\Model\Mail\Processor;
 use Mygento\Smtp\Model\Mail\Validator;
 
 class Transport
 {
     public function __construct(
-        private Logger $mailLogger,
+        private Processor $mailProcessor,
         private Validator $blackListValidator,
         private Config $config,
     ) {
@@ -46,7 +46,6 @@ class Transport
             return;
         }
 
-        $this->mailLogger->logMessage($message);
-        $proceed();
+        $this->mailProcessor->process($proceed, $message);
     }
 }

@@ -34,13 +34,8 @@ class Validator
         $recipient = $this->getRecipient($message);
         $patterns = array_unique(explode(PHP_EOL, $blacklist));
         foreach ($patterns as $pattern) {
-            try {
-                if (preg_match($pattern, $recipient)) {
-                    return true;
-                }
-            } catch (\Exception $e) {
-                // Ignore validate if the pattern is error
-                continue;
+            if (preg_match($pattern, $recipient)) {
+                return true;
             }
         }
 

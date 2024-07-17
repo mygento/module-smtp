@@ -8,6 +8,7 @@
 
 namespace Mygento\Smtp\Model\Mail;
 
+use Closure;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\MailException;
 use Magento\Framework\Mail\Address;
@@ -17,7 +18,7 @@ use Mygento\Smtp\Api\LogRepositoryInterface;
 use Mygento\Smtp\Model\Source\Status;
 use Psr\Log\LoggerInterface;
 
-class Logger
+class Processor
 {
     public function __construct(
         private LogRepositoryInterface $repo,
@@ -26,15 +27,15 @@ class Logger
     ) {
     }
 
-    public function logMessage(EmailMessageInterface $message): void
+    public function process(Closure $proceed, EmailMessageInterface $message): void
     {
         /** @var Data\LogInterface $entity */
         $entity = $this->factory->create();
 
         try {
             $this->fillEntity($entity, $message);
+            $proceed();
             $entity->setStatus(Status::STATUS_SUCCESS);
-            $this->repo->save($entity);
         } catch (MailException $e) {
             $entity->setError($e->getPrevious()->getMessage());
             $entity->setStatus(Status::STATUS_ERROR);
