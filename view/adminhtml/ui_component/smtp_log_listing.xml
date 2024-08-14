@@ -79,6 +79,7 @@
                 </editor>
                 <label translate="true">Status</label>
                 <options class="Mygento\Smtp\Model\Source\Status"/>
+                <bodyTmpl>Mygento_Smtp/grid/cells/status</bodyTmpl>
             </settings>
         </column>
         <column name="error">
