@@ -22,8 +22,7 @@ class Transport
         private Processor $mailProcessor,
         private Validator $blackListValidator,
         private Config $config,
-    ) {
-    }
+    ) {}
 
     /**
      * @param TransportInterface $subject

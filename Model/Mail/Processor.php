@@ -23,9 +23,8 @@ class Processor
     public function __construct(
         private LogRepositoryInterface $repo,
         private Data\LogInterfaceFactory $factory,
-        private LoggerInterface $logger
-    ) {
-    }
+        private LoggerInterface $logger,
+    ) {}
 
     public function process(Closure $proceed, EmailMessageInterface $message): void
     {
@@ -54,7 +53,7 @@ class Processor
     {
         return implode(
             ',',
-            array_map(fn (Address $address) => $address->getEmail(), $list)
+            array_map(fn(Address $address) => $address->getEmail(), $list),
         );
     }
 
@@ -62,13 +61,13 @@ class Processor
     {
         if ($message->getSender()) {
             $entity->setSender(
-                $message->getSender()->getName() . ' <' . $message->getSender()->getEmail() . '>'
+                $message->getSender()->getName() . ' <' . $message->getSender()->getEmail() . '>',
             );
         } elseif (is_iterable($message->getFrom()) && count($message->getFrom()) > 0) {
             $f = $message->getFrom();
             $from = reset($f);
             $entity->setSender(
-                $from->getName() . ' <' . $from->getEmail() . '>'
+                $from->getName() . ' <' . $from->getEmail() . '>',
             );
         }
 

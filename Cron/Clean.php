@@ -19,8 +19,7 @@ class Clean
         private ResourceModel\Log $resource,
         private DateTime $dateTime,
         private DateTime\DateTime $date,
-    ) {
-    }
+    ) {}
 
     public function execute()
     {
@@ -33,7 +32,7 @@ class Clean
         $connection = $this->resource->getConnection();
         $condition = $connection->quoteInto(
             'created_at <= ?',
-            $this->dateTime->formatDate($this->date->gmtTimestamp() - $clearDays * 24 * 60 * 60)
+            $this->dateTime->formatDate($this->date->gmtTimestamp() - $clearDays * 24 * 60 * 60),
         );
         $connection->delete($this->resource->getMainTable(), $condition);
     }

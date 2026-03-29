@@ -31,8 +31,7 @@ class LogRepository implements LogRepositoryInterface
         private readonly LogInterfaceFactory $entityFactory,
         private readonly LogSearchResultsInterfaceFactory $searchResultsFactory,
         private readonly CollectionProcessorInterface $collectionProcessor,
-    ) {
-    }
+    ) {}
 
     /**
      * @throws NoSuchEntityException
@@ -43,7 +42,7 @@ class LogRepository implements LogRepositoryInterface
         $this->resource->load($entity, $entityId);
         if (!$entity->getId()) {
             throw new NoSuchEntityException(
-                __('A Smtp Log with id "%1" does not exist', $entityId)
+                __('A Smtp Log with id "%1" does not exist', $entityId),
             );
         }
 
@@ -60,7 +59,7 @@ class LogRepository implements LogRepositoryInterface
         } catch (\Exception $exception) {
             throw new CouldNotSaveException(
                 __('Could not save the Smtp Log'),
-                $exception
+                $exception,
             );
         }
 
@@ -76,7 +75,7 @@ class LogRepository implements LogRepositoryInterface
             $this->resource->delete($entity);
         } catch (\Exception $exception) {
             throw new CouldNotDeleteException(
-                __($exception->getMessage())
+                __($exception->getMessage()),
             );
         }
 

@@ -15,8 +15,7 @@ class Validator
 {
     public function __construct(
         private Config $config,
-    ) {
-    }
+    ) {}
 
     public function isValid(EmailMessageInterface $message): bool
     {

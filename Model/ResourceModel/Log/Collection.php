@@ -24,7 +24,7 @@ class Collection extends AbstractCollection
     {
         $this->_init(
             Log::class,
-            LogResource::class
+            LogResource::class,
         );
     }
 }

@@ -17,9 +17,8 @@ class Config
     private const XML_PATH_BLACKLIST = 'system/smtp/blacklist';
 
     public function __construct(
-        private ScopeConfigInterface $scopeConfig
-    ) {
-    }
+        private ScopeConfigInterface $scopeConfig,
+    ) {}
 
     /**
      * @return bool
